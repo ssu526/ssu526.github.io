@@ -1,42 +1,11 @@
-/******************************** LOAD SKILLS *******************************/
-const skills = [
-  "Java",
-  "JavaScript",
-  "TypeScript",
-  "Node.js",
-  "Express.js",
-  "React",
-  "Spring Boot",
-  "SQL",
-  "MongoDB",
-  "HTML",
-  "CSS",
-  "Git",
-];
-
-const skillsContainer = document.querySelectorAll(".skills");
-
-const loadSkills = (container, arr) => {
-  let skillsText = "";
-  arr.forEach((item) => {
-    skillsText += `<p class="skill">${item}<span class="divider">|</span></p>`;
-  });
-
-  const lastSeparatorIndex = skillsText.lastIndexOf(
-    '<span class="divider">|</span>'
-  );
-  if (lastSeparatorIndex !== -1) {
-    skillsText = skillsText.slice(0, lastSeparatorIndex);
-  }
-  skillsText = skillsText.slice(0, lastSeparatorIndex);
-  container.innerHTML = skillsText;
-};
-
-skillsContainer.forEach((container) => loadSkills(container, skills));
-
 /******************************* EMAIL TOOLTIP *********************************/
 const email_buttons = document.querySelectorAll(".email");
 const tooltips = document.querySelectorAll(".tooltiptext");
+const SCREENSHOTS_FOLDER = "./images/screenshots/";
+const THUMBNAILS_FOLDER = "./images/thumbnails/";
+const btn_close = document.querySelector("#close");
+const modal = document.querySelector("#modal");
+const screenshots_container = document.querySelector("#screenshots-container");
 
 email_buttons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -49,105 +18,111 @@ email_buttons.forEach((button) => {
 
   button.addEventListener("mouseout", () => {
     tooltips.forEach((tooltip) => {
-      tooltip.innerHTML = "Click to copy Email";
+      tooltip.innerHTML = "Copy Email";
     });
   });
 });
 
 /****************************** LOAD PROJECTS *********************************/
-const projectsContainer = document.querySelector(".projects-list");
+const projectsContainer = document.querySelector(".projects-container");
 
 projects.reverse().forEach((project) => {
-  if (project.id === 1) return;
   projectsContainer.innerHTML += `
-                <li class="li-item-container project" data-screenshot=${
-                  project.screenshot
-                } data-id=${project.id}>
-                  <div li-title-container>
-                    <a class="li-title" href=${
-                      project.github
-                    } target="_blank"><span class="right-arrow">➤</span> ${
-    project.name
-  }</a>
-                    <span class="in-progress">${project.inProgress}</span>
-                    <a href="${project.demo}" target="_blank" class="demo ${
-    project.demo === "" ? "hide" : ""
-  }">(Demo)</a>
-                  </div>
-                  <p class="li-desc project-tech-stack">${project.techStack}</p>
-                </li>
-                `;
+    <div class="project-container">
+      <img class="project-img" data-id=${project.id} src="${THUMBNAILS_FOLDER}${
+    project.thumbnail
+  }" alt=${project.name} onclick="openModal(${project.id})"/>
+      <div class="project-detail">
+        <p class="project-name">${project.name}</p>
+        <p class="project-tech-stack">${project.techStack}</p>
+        <p class="project-desc">${project.desc}</p>
+      </div>
+      <div class="project-links-container">
+        <a class="project-link ${
+          project.github === "" ? "hide" : ""
+        }" target="_blank" href=${project.github}>Github</a>
+        <a class="project-link ${
+          project.demo === "" ? "hide" : ""
+        }" target="_blank" href=${project.demo}>Demo</a>
+      </div>
+    </div>
+  `;
 });
 
-const jsGames = projects[projects.length - 1];
+// JS projects
 projectsContainer.innerHTML += `
-<li class="li-item-container project" data-screenshot=${jsGames.screenshot} data-id=${jsGames.id}>
-  <div li-title-container>
-    <p class="li-title"><span class="right-arrow">➤</span> ${jsGames.name}</p>
-    <span class="in-progress">${jsGames.inProgress}</span>
-  </div>
-  <div class="li-desc">
-    <span class="li-desc">Tetris(</span>
-    <a href="https://famous-queijadas-e79014.netlify.app/" class="li-desc js-game-link" target="_blank">Demo</a>,
-    <a href="https://github.com/ssu526/game_tetris" class="li-desc js-game-link" target="_blank">Code</a>)&nbsp;|&nbsp;
+    <div class="project-container">
+      <img class="project-img" data-id="0" src="${THUMBNAILS_FOLDER}js-games.PNG" alt="JavaScript games" onclick="openModal(0)"/>
+      <div class="project-detail">
+        <p class="project-name">Games built with vanilla JavaScript, HTML, CSS</p>
+        <div class="js-games-container">
+          <div class="js-game">
+            <p class="js-game-name">Tetris</p>
+            <div class="js-game-links-container">
+              <a class="project-link" target="_blank" href="https://github.com/ssu526/game_tetris">Github</a>
+              <a class="project-link" target="_blank" href="https://famous-queijadas-e79014.netlify.app/">Demo</a>
+            </div>
+          </div>
 
-    <span class="li-desc">Sudoku(</span>
-    <a href="https://teal-halva-68bb0a.netlify.app/" class="li-desc js-game-link" target="_blank">Demo</a>,
-    <a href="https://github.com/ssu526/game_sudoku" class="li-desc js-game-link" target="_blank">Code</a>)&nbsp;|&nbsp;
+          <div class="js-game">
+            <p class="js-game-name">2048</p>
+            <div class="js-game-links-container">
+              <a class="project-link" target="_blank" href="https://github.com/ssu526/game_2048">Github</a>
+              <a class="project-link" target="_blank" href="https://celadon-rabanadas-57983d.netlify.app/">Demo</a>
+            </div>
+          </div>
 
-    <span class="li-desc">2048(</span>
-    <a href="https://celadon-rabanadas-57983d.netlify.app/" class="li-desc js-game-link" target="_blank">Demo</a>,
-    <a href="https://github.com/ssu526/game_2048" class="li-desc js-game-link" target="_blank">Code</a>)
-  </div>
-</li>
-`;
+          <div class="js-game">
+            <p class="js-game-name">Sudoku</p>
+            <div class="js-game-links-container">
+              <a class="project-link" target="_blank" href="https://github.com/ssu526/game_sudoku">Github</a>
+              <a class="project-link" target="_blank" href="https://teal-halva-68bb0a.netlify.app/">Demo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
 /******************************* LOAD LEARN & CODE *****************************/
-const learningContainer = document.querySelector(".learning-list");
+const learningContainer = document.querySelector(".learnings-container");
 
 learnings.reverse().forEach((l) => {
   learningContainer.innerHTML += `
-                <li class="li-item-container learning"
-                  <div li-title-container>
-                    <a class="li-title" href=${l.github} target="_blank">${l.title} <span class="in-progress">${l.inProgress}</span></a>
-                  </div>
-                  <p class="li-desc project-tech-stack">${l.desc}</p>
-                </li>
-                `;
+    <div class="learning-container">
+      <div class="learning-info">
+        <p class="learning-title">${l.title}</p>
+        <div class="link-container">
+          <a class="project-link" target="_blank" href=${l.github}>Github</a></div>
+      </div>
+      <p class="learning-desc">${l.desc}</p>
+    </div>
+  `;
 });
 
-/***************************** UPDATE SCREENSHOT **********************************/
-const projectItems = document.querySelectorAll(".project");
-const screenShotContainer = document.querySelector(".screenshot-container");
-const screenShotImage = document.querySelector(".screenshot");
-const projectDec = document.querySelector(".project-desc");
+/************************************** EVENT HANDLERS ***********************************/
+const openModal = (projectId) => {
+  let projectName;
+  let screenshots;
 
-projectItems.forEach((project) => {
-  project.addEventListener("mouseenter", function () {
-    const projectSrc = project.getAttribute("data-screenshot");
-    screenShotImage.src = "./images/screenshots/" + projectSrc;
-    const projectId = project.getAttribute("data-id");
-    projectDec.textContent = projects.filter((p) => p.id == projectId)[0].desc;
-  });
+  if (projectId === 0) {
+    projectName = "JavaScript games";
+    screenshots = js_games_screenshots;
+  } else {
+    const project = projects.find((p) => p.id === projectId);
+    if (!project) return;
+    projectName = project.name;
+    screenshots = project.screenshots;
+  }
 
-  project.addEventListener("mouseleave", function () {
-    screenShotImage.src = "./images/screenshots/screenshot-placeholder.PNG";
-    projectDec.textContent = "";
+  modal.style.display = "block";
+
+  screenshots.forEach((screenshot) => {
+    screenshots_container.innerHTML += `<img src="${SCREENSHOTS_FOLDER}${screenshot}" alt="${projectName} screenshot/">`;
   });
+};
+
+btn_close.addEventListener("click", () => {
+  modal.style.display = "none";
+  screenshots_container.innerHTML = "";
 });
-
-// /******************************** SCROLL EVENT HANDLER ***************************/
-// const content = document.getElementsByClassName("content-container")[0];
-// const introContainer = document.getElementsByClassName("intro-container")[0];
-
-// if (content && introContainer) {
-//   window.addEventListener("scroll", function () {
-//     let scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-//     if (scrollTop === 0) {
-//       introContainer.classList.remove("hidden");
-//     } else {
-//       introContainer.classList.add("hidden");
-//     }
-//   });
-// }
